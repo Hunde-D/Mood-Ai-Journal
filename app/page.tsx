@@ -2,6 +2,7 @@ import Image from 'next/image'
 import journal from '@/images/journalCover.jpg'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
+import { Plus } from 'lucide-react'
 
 export default function Home() {
   return (
@@ -11,14 +12,14 @@ export default function Home() {
           variant="outline"
           className="text-2xl hover:border hover:border-[hsl(24.6,95%,53.1%)] hover:text-[hsl(24.6,95%,53.1%)]"
         >
-          +
+          <Plus size={14} />
         </Button>
         <Button
           asChild
           className="ml-auto hover:border hover:border-[hsl(24.6,95%,53.1%)] hover:text-[hsl(24.6,95%,53.1%)]"
           variant="outline"
         >
-          <Link href="/">Get Started</Link>
+          <Link href="/journal">Get Started</Link>
         </Button>
       </div>
       <div className="flex w-[60%] justify-between text-xs">
