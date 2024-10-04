@@ -34,7 +34,7 @@ export default function Home() {
       >
         .JOURNAL
       </h1>
-      <div className="h-full w-full flex-auto overflow-hidden bg-red-300">
+      <div className="h-full w-full flex-auto overflow-hidden bg-orange-300">
         <Image
           src={journal}
           alt="hero"
