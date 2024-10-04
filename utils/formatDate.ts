@@ -1,7 +1,7 @@
-export const formatTime = (updatedAt) => {
+export const formatTime = (updatedAt: string | Date): string => {
   const now = new Date()
   const updatedDate = new Date(updatedAt)
-  const timeDifference = now - updatedDate // Difference in milliseconds
+  const timeDifference = now.getTime() - updatedDate.getTime() // Difference in milliseconds
   const oneDay = 24 * 60 * 60 * 1000 // Milliseconds in a day
   const oneWeek = 7 * oneDay
 
