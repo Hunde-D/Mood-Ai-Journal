@@ -9,8 +9,9 @@ export const getEntries = async () => {
     orderBy: {
       createdAt: 'desc',
     },
+    include: { analysis: true },
   })
-  console.log(entries)
+
   return entries
 }
 
@@ -23,6 +24,7 @@ export const getEntryById = async (id: string) => {
         id,
       },
     },
+    include: { analysis: true },
   })
 
   return entry

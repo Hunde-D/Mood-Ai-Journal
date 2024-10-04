@@ -7,19 +7,24 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import { formatTime } from '@/utils/formatDate'
 import Link from 'next/link'
 const EntryCard = ({ entries }) => {
   return entries?.map((entry) => (
-    <Link href={`/journal/${entry.id}`} key={entry.id}>
-      <Card className="w-72 cursor-pointer items-center justify-center">
+    <Link
+      href={`/journal/${entry.id}`}
+      key={entry.id}
+      className="h-40 w-72 max-w-80 flex-auto"
+    >
+      <Card className="h-full w-full cursor-pointer items-center justify-center">
         <CardHeader>
-          <CardTitle>Mood</CardTitle>
+          <CardTitle>{entry.analysis.subject}</CardTitle>
           <CardDescription>
-            {new Date(entry.updatedAt).toDateString()}
+            last updated {formatTime(entry.updatedAt)}
           </CardDescription>
         </CardHeader>
-        <CardContent className="line-clamp-4 flex items-center justify-start">
-          {entry.content}
+        <CardContent className="flex items-center justify-start">
+          <p className="line-clamp-2">{entry.content}</p>
         </CardContent>
       </Card>
     </Link>

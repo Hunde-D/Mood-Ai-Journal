@@ -13,11 +13,21 @@ export const POST = async () => {
     data: {
       userId: user.id,
       content: 'Write about your day...!',
+      analysis: {
+        create: {
+          userId: user.id,
+          mood: 'neutral',
+          subject: 'general',
+          summary: 'No summary available',
+          color: '#808080',
+          sentimentScore: 0,
+          emoji:'😐',
+        },
+      },
     },
+    include: { analysis: true },
   })
 
   revalidatePath('/journal')
   return NextResponse.json({ data: entry })
 }
-
-// export const GET

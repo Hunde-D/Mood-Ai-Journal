@@ -5,6 +5,7 @@ import { NextResponse } from 'next/server'
 
 export const PATCH = async (req: Request, { params }) => {
   const { content } = await req.json()
+
   const user = await getUserByClerkId()
   if (!user) {
     console.log('user not found')
@@ -20,6 +21,7 @@ export const PATCH = async (req: Request, { params }) => {
     data: {
       content,
     },
+    include: { analysis: true },
   })
 
   revalidatePath(`/journal/${params.id}`)

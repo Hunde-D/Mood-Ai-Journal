@@ -53,7 +53,11 @@ model JournalEntry {
 
   @@unique([userId, id])
 }
-
+enum JOURNAL_ENTRY_EMOTION {
+  NEUTRAL
+  POSITIVE
+  NEGATIVE
+}
 model EntryAnalysis {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())
@@ -67,10 +71,11 @@ model EntryAnalysis {
 
   mood String @db.Text
   subject String @db.Text
-  negative Boolean
+  emotion JOURNAL_ENTRY_EMOTION @default(NEUTRAL)
   summary String @db.Text
-  color String @db.Text @default("#0101fe")
+  color String @db.Text @default("#dadadc")
   sentimentScore Float
+  emoji String?
 
   @@unique([entryId])
   @@index([userId])
