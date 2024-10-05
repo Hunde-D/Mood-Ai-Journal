@@ -12,6 +12,7 @@ import { updateEntry } from '@/utils/api'
 import { Button } from './ui/button'
 import { LoaderCircle } from 'lucide-react'
 import { formatTime } from '@/utils/formatDate'
+import { toast } from 'sonner'
 const Editor = ({ entry }) => {
   const [content, setContent] = useState(entry.content)
   const [loading, setLoading] = useState(false)
@@ -32,11 +33,18 @@ const Editor = ({ entry }) => {
   useAutosave({
     data: content,
     onSave: async (data) => {
-      setLoading(true)
-      await updateEntry(entry.id, data)
-      setLoading(false)
+      // Use the updateEntry promise directly in toast.promise
+      toast.promise(
+        updateEntry(entry.id, data), // Pass the updateEntry promise
+        {
+          loading: 'Saving...',
+          success: () => `Journal is Updated ! `,
+          error: 'Error saving data',
+        },
+      )
     },
   })
+
   const analysisData = [
     { name: 'Mood', value: 'mood' },
     { name: 'Subject', value: 'subject' },
@@ -54,9 +62,8 @@ const Editor = ({ entry }) => {
   return (
     <ResizablePanelGroup direction="horizontal" className="h-full w-full">
       <ResizablePanel defaultSize={75} className="px-3 py-1">
-        {loading && <p>saving</p>}
         <Textarea
-          className="h-full w-full"
+          className="h-full w-full resize-none"
           value={content}
           onChange={(e) => setContent(e.target.value)}
         />
@@ -72,8 +79,8 @@ const Editor = ({ entry }) => {
           </div>
         </div>
         <div
-          className="moodBackground h-16 w-full"
-          style={{ backgroundColor: `rgba(${hexToRGB(analysis.color)}, 0.5)` }}
+          className="moodBackground h-16 w-full rounded-xl"
+          style={{ backgroundColor: `rgba(${hexToRGB(analysis.color)}, 0.7)` }}
         ></div>
         <div className="divide-y">
           {analysisData.map((item) => (

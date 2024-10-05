@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Home, LineChart, Menu, Search, Book } from 'lucide-react'
+import { Home, LineChart, Menu, Book } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -9,9 +9,10 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
+import ThemeSwitch from '@/components/ThemeSwitch'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { UserButton } from '@clerk/nextjs'
+import NavLinks from './NavLinks'
 
 export default function Dashboard({ children }: { children: React.ReactNode }) {
   return (
@@ -19,39 +20,16 @@ export default function Dashboard({ children }: { children: React.ReactNode }) {
       <div className="hidden border-r bg-muted/40 md:block">
         <div className="flex h-full max-h-screen flex-col gap-2">
           <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
-            <Link
-              href="/journal"
-              className="flex items-center gap-2 font-semibold"
-            >
+            <Link href="/" className="flex items-center gap-2 font-semibold">
               <p className="flex h-6 w-6 items-center gap-4 text-lg">
                 😎
-                <span className="">Mood</span>
+                <span className="hover:text-primary">Mood</span>
               </p>
             </Link>
           </div>
           <div className="flex-1">
             <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
-              <Link
-                href="#"
-                className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
-              >
-                <Home className="h-4 w-4" />
-                Dashboard
-              </Link>
-              <Link
-                href="#"
-                className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
-              >
-                <Book className="h-4 w-4" />
-                Journals
-              </Link>
-              <Link
-                href="#"
-                className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
-              >
-                <LineChart className="h-4 w-4" />
-                Analytics
-              </Link>
+              <NavLinks />
             </nav>
           </div>
           <div className="mt-auto p-4">
@@ -135,8 +113,8 @@ export default function Dashboard({ children }: { children: React.ReactNode }) {
               </div>
             </SheetContent>
           </Sheet>
-          <div className="w-full flex-1">
-            <form>
+          <div className="flex h-full w-full flex-1 items-center justify-end">
+            {/* <form>
               <div className="relative">
                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input
@@ -145,7 +123,8 @@ export default function Dashboard({ children }: { children: React.ReactNode }) {
                   className="w-full appearance-none bg-background pl-8 shadow-none md:w-1/3 lg:w-2/5"
                 />
               </div>
-            </form>
+            </form> */}
+            <ThemeSwitch />
           </div>
           <UserButton />
         </header>

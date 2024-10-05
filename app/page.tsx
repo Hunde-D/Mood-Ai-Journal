@@ -1,47 +1,39 @@
-import Image from 'next/image'
-import journal from '@/images/journalCover.jpg'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
-import { Plus } from 'lucide-react'
+import ThemeSwitch from '@/components/ThemeSwitch'
+import GradientText from '@/components/Gradiant'
 
 export default function Home() {
   return (
-    <div className="flex h-screen w-full flex-col items-center justify-center">
-      <div className="mb-3 flex h-80 w-full justify-between p-2">
-        <Button
-          variant="outline"
-          className="text-2xl hover:border hover:border-[hsl(24.6,95%,53.1%)] hover:text-[hsl(24.6,95%,53.1%)]"
-        >
-          <Plus size={14} />
-        </Button>
-        <Button
-          asChild
-          className="ml-auto hover:border hover:border-[hsl(24.6,95%,53.1%)] hover:text-[hsl(24.6,95%,53.1%)]"
-          variant="outline"
-        >
-          <Link href="/journal">Get Started</Link>
-        </Button>
+    <div className="grid h-screen w-full grid-rows-2">
+      <div className="moodJournal grid h-full w-full">
+        <div className="flex w-full justify-between px-4 py-2">
+          <ThemeSwitch />
+          <Link href="/journal">
+            <GradientText
+              colors={['#ffaa40', '#ea580c', '#FFFB7D']}
+              animationSpeed={3}
+              showBorder={true}
+              className="rounded-md p-1 px-2"
+            >
+              Get Started
+            </GradientText>
+          </Link>
+        </div>
+        <div className="mx-auto flex w-fit justify-between gap-40 text-xs">
+          <p>SelfReflection</p>
+          <p>MoodTracker</p>
+          <p>MoodAnalysis</p>
+          <p>AIJournal</p>
+        </div>
+        <h1 className="mx-auto w-fit justify-center place-self-end text-[14rem] leading-none text-primary">
+          MOOD AI
+        </h1>
       </div>
-      <div className="flex w-[60%] justify-between text-xs">
-        <p>SelfReflection</p>
-        <p>MoodTracker</p>
-        <p>MoodAnalysis</p>
-        <p>AIJournal</p>
-      </div>
-      <h1
-        className="flex w-full justify-center text-[14rem] leading-none"
-        style={{ color: 'hsl(var(--primary))' }}
-      >
-        .JOURNAL
-      </h1>
-      <div className="h-full w-full flex-auto overflow-hidden bg-orange-300">
-        <Image
-          src={journal}
-          alt="hero"
-          className="w-full"
-          width={1000}
-          height={1000}
-        />
+      <div className="moodBackground h-full w-full bg-black dark:bg-white">
+        <h2 className="flex w-full justify-center text-[14rem] leading-none text-primary">
+          .JOURNAL
+        </h2>
       </div>
     </div>
   )

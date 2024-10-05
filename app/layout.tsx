@@ -1,4 +1,6 @@
 import type { Metadata } from 'next'
+import { Toaster } from '@/components/ui/sonner'
+import { ThemeProvider } from '@/components/ThemeProvider'
 
 import { ClerkProvider } from '@clerk/nextjs'
 import localFont from 'next/font/local'
@@ -32,7 +34,16 @@ export default function RootLayout({
       >
         <ClerkProvider>
           <html lang="en">
-            <body>{children}</body>
+            <body>
+              <ThemeProvider
+                attribute="class"
+                defaultTheme="system"
+                enableSystem
+              >
+                {children}
+                <Toaster richColors position="top-center" />
+              </ThemeProvider>
+            </body>
           </html>
         </ClerkProvider>
       </body>

@@ -21,7 +21,7 @@ const NewEntry = () => {
       <Tooltip>
         <TooltipTrigger asChild>
           <Card
-            className="flex h-10 w-fit cursor-pointer items-center justify-between gap-10 px-5"
+            className="flex h-10 w-fit cursor-pointer items-center justify-between gap-10 px-5 hover:bg-gray-100 dark:hover:bg-white/20"
             onClick={handleClick}
           >
             <CardHeader className="p-0">
