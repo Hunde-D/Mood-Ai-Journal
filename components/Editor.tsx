@@ -11,7 +11,7 @@ import { useAutosave } from 'react-autosave'
 import { updateEntry } from '@/utils/api'
 import { Button } from './ui/button'
 import { LoaderCircle } from 'lucide-react'
-import { formatTime } from '@/utils/formatDate'
+import useClientFormattedTime from '@/utils/formatDate'
 import { toast } from 'sonner'
 const Editor = ({ entry }) => {
   const [content, setContent] = useState(entry.content)
@@ -19,28 +19,29 @@ const Editor = ({ entry }) => {
   const [analysisLoading, setAnalysisLoading] = useState(false)
 
   const handleNewAnalysis = async () => {
-    try {
-      setAnalysisLoading(true)
-      const data = await updateAnalysis(entry.id, content)
-      setAnalysis(data)
-      setAnalysisLoading(false)
-    } catch (error) {
-      console.log('handleError:', error)
+    const promise = async () => {
+      try {
+        setAnalysisLoading(true)
+        const data = await updateAnalysis(entry.id, content)
+        setAnalysis(data)
+        setAnalysisLoading(false)
+        return data
+      } catch (error) {
+        throw error
+      }
     }
+
+    toast.promise(promise(), {
+      loading: 'Updating analysis...',
+      success: (data) => `You look ${data.mood} ${data.emoji}`,
+      error: 'Failed to update analysis',
+    })
   }
 
   useAutosave({
     data: content,
     onSave: async (data) => {
-      // Use the updateEntry promise directly in toast.promise
-      toast.promise(
-        updateEntry(entry.id, data), // Pass the updateEntry promise
-        {
-          loading: 'Saving...',
-          success: () => `Journal is Updated ! `,
-          error: 'Error saving data',
-        },
-      )
+      await updateEntry(entry.id, data)
     },
   })
 
@@ -73,7 +74,7 @@ const Editor = ({ entry }) => {
           <div>
             <h3 className="text-lg font-semibold">AI Analysis</h3>
             <p className="text-xs text-muted-foreground">
-              last analyzed {formatTime(analysis.updatedAt)}
+              last analyzed {useClientFormattedTime(analysis.updatedAt)}
             </p>
           </div>
         </div>

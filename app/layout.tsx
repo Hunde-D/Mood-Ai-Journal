@@ -29,24 +29,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <ClerkProvider>
-          <html lang="en">
-            <body>
-              <ThemeProvider
-                attribute="class"
-                defaultTheme="system"
-                enableSystem
-              >
-                {children}
-                <Toaster richColors position="top-center" />
-              </ThemeProvider>
-            </body>
-          </html>
-        </ClerkProvider>
-      </body>
+      <ClerkProvider>
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        >
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            {children}
+            <Toaster richColors position="top-center" />
+          </ThemeProvider>
+        </body>
+      </ClerkProvider>
     </html>
   )
 }
