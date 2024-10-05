@@ -29,7 +29,7 @@ export default function Home() {
           MOOD AI
         </h1>
       </div>
-      <div className="moodBackground h-full w-full bg-black dark:bg-white">
+      <div className="moodJournal h-full w-full bg-black dark:bg-white">
         <h2 className="flex w-full justify-center text-[14rem] leading-none text-primary">
           .JOURNAL
         </h2>
