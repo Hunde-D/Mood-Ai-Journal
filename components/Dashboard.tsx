@@ -11,8 +11,9 @@ import {
 } from '@/components/ui/card'
 import ThemeSwitch from '@/components/ThemeSwitch'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
-import { UserButton } from '@clerk/nextjs'
 import NavLinks from './NavLinks'
+import SearchInput from './SearchInput'
+import UserAvatar from './UserAvatar'
 
 export default function Dashboard({ children }: { children: React.ReactNode }) {
   return (
@@ -113,20 +114,13 @@ export default function Dashboard({ children }: { children: React.ReactNode }) {
               </div>
             </SheetContent>
           </Sheet>
-          <div className="flex h-full w-full flex-1 items-center justify-end">
-            {/* <form>
-              <div className="relative">
-                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input
-                  type="search"
-                  placeholder="Search products..."
-                  className="w-full appearance-none bg-background pl-8 shadow-none md:w-1/3 lg:w-2/5"
-                />
-              </div>
-            </form> */}
+          <div className="flex h-full w-full flex-1 items-center justify-end gap-5">
+            <SearchInput />
             <ThemeSwitch />
           </div>
-          <UserButton />
+          <Card className="grid h-9 w-9 justify-center">
+            <UserAvatar />
+          </Card>
         </header>
         <main className="flex-1 p-4 pb-0">{children}</main>
       </div>
