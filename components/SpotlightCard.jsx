@@ -3,7 +3,6 @@ import { useRef, useState } from 'react'
 
 const SpotlightCard = ({
   children,
-  className = '',
   spotlightColor = 'var(--spotlight-color)',
 }) => {
   const divRef = useRef(null)

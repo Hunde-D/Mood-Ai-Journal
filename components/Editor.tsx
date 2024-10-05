@@ -15,7 +15,6 @@ import { formatTime } from '@/utils/formatDate'
 import { toast } from 'sonner'
 const Editor = ({ entry }) => {
   const [content, setContent] = useState(entry.content)
-  const [loading, setLoading] = useState(false)
   const [analysis, setAnalysis] = useState(entry.analysis)
   const [analysisLoading, setAnalysisLoading] = useState(false)
 

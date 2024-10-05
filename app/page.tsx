@@ -1,4 +1,3 @@
-import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import ThemeSwitch from '@/components/ThemeSwitch'
 import GradientText from '@/components/Gradiant'
