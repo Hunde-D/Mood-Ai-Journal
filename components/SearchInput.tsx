@@ -8,7 +8,7 @@ const SearchInput = () => {
       <Search className="absolute left-2.5 h-4 w-4 text-muted-foreground" />
       <Input
         type="search"
-        placeholder="Search products..."
+        placeholder="Ask AI anything..."
         className="w-72 appearance-none bg-background px-8 shadow-none"
       />
       <div className="absolute right-2.5 text-sm text-muted-foreground">
