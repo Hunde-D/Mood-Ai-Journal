@@ -17,7 +17,7 @@ const EntryCard = ({ entries }) => {
     <Link
       href={`/journal/${entry.id}`}
       key={entry.id}
-      className="w-80 flex-auto"
+      className="w-96 flex-auto md:w-80"
     >
       <SpotlightCard>
         <Card className="h-40 min-h-40 w-full cursor-pointer items-center justify-center">

@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Home, LineChart, Menu, Book } from 'lucide-react'
+import { Menu } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -67,34 +67,14 @@ export default function Dashboard({ children }: { children: React.ReactNode }) {
               <nav className="grid gap-2 text-lg font-medium">
                 <Link
                   href="#"
-                  className="flex items-center gap-2 text-lg font-semibold"
+                  className="flex items-center gap-5 text-lg font-semibold"
                 >
-                  <p className="flex h-6 w-6 items-center gap-4 text-lg">
-                    😎
-                    <span className="">Mood</span>
+                  <ThemeSwitch />
+                  <p className="mx-3 flex h-6 w-6 items-center gap-4 text-xl">
+                    Mood
                   </p>
                 </Link>
-                <Link
-                  href="#"
-                  className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
-                >
-                  <Home className="h-5 w-5" />
-                  Dashboard
-                </Link>
-                <Link
-                  href="#"
-                  className="mx-[-0.65rem] flex items-center gap-4 rounded-xl bg-muted px-3 py-2 text-foreground hover:text-foreground"
-                >
-                  <Book className="h-5 w-5" />
-                  Journals
-                </Link>
-                <Link
-                  href="#"
-                  className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
-                >
-                  <LineChart className="h-5 w-5" />
-                  Analytics
-                </Link>
+                <NavLinks mobile />
               </nav>
               <div className="mt-auto">
                 <Card>
@@ -114,11 +94,16 @@ export default function Dashboard({ children }: { children: React.ReactNode }) {
               </div>
             </SheetContent>
           </Sheet>
-          <div className="flex h-full w-full flex-1 items-center justify-end gap-5">
+          <div className="flex h-full w-full flex-1 items-center justify-end gap-5 max-sm:mr-2">
             <SearchInput />
-            <ThemeSwitch />
+            <div className="max-sm:hidden">
+              <ThemeSwitch />
+            </div>
+            <div className="sm:hidden">
+              <UserAvatar />
+            </div>
           </div>
-          <Card className="grid h-9 w-9 justify-center">
+          <Card className="grid h-9 w-9 justify-center max-sm:hidden">
             <UserAvatar />
           </Card>
         </header>

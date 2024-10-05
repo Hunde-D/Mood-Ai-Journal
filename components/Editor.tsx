@@ -13,6 +13,7 @@ import { Button } from './ui/button'
 import { LoaderCircle } from 'lucide-react'
 import { formatTime } from '@/utils/formatDate'
 import { toast } from 'sonner'
+import MobileAnalysisView from './MobileAnalysisView'
 const Editor = ({ entry }) => {
   const [content, setContent] = useState(entry.content)
   const [analysis, setAnalysis] = useState(entry.analysis)
@@ -61,15 +62,37 @@ const Editor = ({ entry }) => {
 
   return (
     <ResizablePanelGroup direction="horizontal" className="h-full w-full">
-      <ResizablePanel defaultSize={75} className="px-3 py-1">
+      <ResizablePanel
+        defaultSize={75}
+        className="px-3 py-1 max-sm:flex max-sm:flex-col max-sm:gap-4 max-sm:pl-2 max-sm:pr-8"
+      >
         <Textarea
-          className="h-full w-full resize-none"
+          className="h-full w-full resize-none max-sm:hidden"
           value={content}
           onChange={(e) => setContent(e.target.value)}
         />
+        <div className="flex h-full flex-col gap-5 sm:hidden">
+          <Textarea
+            className="h-4/5 w-full resize-none"
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+          />
+          <MobileAnalysisView
+            analysis={analysis}
+            analysisData={analysisData}
+            analysisLoading={analysisLoading}
+            handleNewAnalysis={handleNewAnalysis}
+            hexToRGB={hexToRGB}
+          >
+            <Button className="w-full">Open Analyzer</Button>
+          </MobileAnalysisView>
+        </div>
       </ResizablePanel>
       <ResizableHandle withHandle />
-      <ResizablePanel defaultSize={25} className="flex flex-col gap-5 pl-5">
+      <ResizablePanel
+        defaultSize={25}
+        className="flex flex-col gap-5 pl-5 max-md:hidden"
+      >
         <div className="flex h-fit items-center justify-between px-5">
           <div>
             <h3 className="text-lg font-semibold">AI Analysis</h3>

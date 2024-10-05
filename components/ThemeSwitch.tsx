@@ -11,13 +11,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { toast } from 'sonner'
-
 export default function ModeToggle() {
   const { setTheme } = useTheme()
   const handleThemeChange = (theme: string) => {
     setTheme(theme)
-    toast.success(<code>Theme changed to {theme}</code>)
   }
 
   return (

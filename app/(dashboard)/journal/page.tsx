@@ -11,7 +11,7 @@ const Page = async () => {
       <h2 className="text-3xl">Journals</h2>
       <NewEntry />
       <ScrollArea className="h-[200px] w-full flex-auto">
-        <div className="flex flex-wrap gap-5 pb-3">
+        <div className="grid gap-5 pb-3 md:flex md:flex-wrap">
           <EntryCard entries={entries} />
         </div>
       </ScrollArea>
