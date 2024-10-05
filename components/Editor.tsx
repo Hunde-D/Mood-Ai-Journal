@@ -11,7 +11,7 @@ import { useAutosave } from 'react-autosave'
 import { updateEntry } from '@/utils/api'
 import { Button } from './ui/button'
 import { LoaderCircle } from 'lucide-react'
-import useClientFormattedTime from '@/utils/formatDate'
+import { formatTime } from '@/utils/formatDate'
 import { toast } from 'sonner'
 const Editor = ({ entry }) => {
   const [content, setContent] = useState(entry.content)
@@ -74,7 +74,7 @@ const Editor = ({ entry }) => {
           <div>
             <h3 className="text-lg font-semibold">AI Analysis</h3>
             <p className="text-xs text-muted-foreground">
-              last analyzed {useClientFormattedTime(analysis.updatedAt)}
+              last analyzed {formatTime(analysis.updatedAt)}
             </p>
           </div>
         </div>

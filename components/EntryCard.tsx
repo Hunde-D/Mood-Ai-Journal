@@ -8,9 +8,11 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import SpotlightCard from '@/components/SpotlightCard'
-import useClientFormattedTime from '@/utils/formatDate'
+import { formatTime } from '@/utils/formatDate'
 import Link from 'next/link'
 const EntryCard = ({ entries }) => {
+  // const entryDate = useClientFormattedTime()
+
   return entries?.map((entry) => (
     <Link
       href={`/journal/${entry.id}`}
@@ -22,7 +24,7 @@ const EntryCard = ({ entries }) => {
           <CardHeader>
             <CardTitle>{entry.analysis.subject}</CardTitle>
             <CardDescription>
-              last updated {useClientFormattedTime(entry.updatedAt)}
+              last updated {formatTime(entry.updatedAt)}
             </CardDescription>
           </CardHeader>
           <CardContent className="flex items-center justify-start">
