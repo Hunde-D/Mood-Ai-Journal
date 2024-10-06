@@ -14,7 +14,6 @@ import { LoaderCircle } from 'lucide-react'
 import { formatTime } from '@/utils/formatDate'
 import { toast } from 'sonner'
 import MobileAnalysisView from './MobileAnalysisView'
-import { set } from 'zod'
 const Editor = ({ entry }) => {
   const [content, setContent] = useState(entry.content)
   const [analysis, setAnalysis] = useState(entry.analysis)

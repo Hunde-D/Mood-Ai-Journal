@@ -12,7 +12,7 @@ import {
 import ThemeSwitch from '@/components/ThemeSwitch'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import NavLinks from './NavLinks'
-import SearchInput from './SearchInput'
+import { CommandDialogDemo } from './QuestionDialog'
 import UserAvatar from './UserAvatar'
 
 export default function Dashboard({ children }: { children: React.ReactNode }) {
@@ -95,7 +95,7 @@ export default function Dashboard({ children }: { children: React.ReactNode }) {
             </SheetContent>
           </Sheet>
           <div className="flex h-full w-full flex-1 items-center justify-end gap-5 max-sm:mr-2">
-            <SearchInput />
+            <CommandDialogDemo />
             <div className="max-sm:hidden">
               <ThemeSwitch />
             </div>
