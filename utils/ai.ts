@@ -6,7 +6,7 @@ const JournalAnalysis = z
     mood: z
       .string()
       .describe(
-        'The mood of the journal entry or The mood of the person who wrote the journal entry..',
+        'The mood of the journal entry or The mood of the person who wrote the journal entry must be one word.',
       ),
     subject: z.string().describe('The subject or theme of the journal entry.'),
     summary: z
@@ -49,7 +49,7 @@ export const analyzeEntry = async (entry: string) => {
   const aiMsg = await structuredLlm.invoke([
     [
       'system',
-      `You are an assistant that analyzes journal entries. Analyze the following journal entry and return a JSON object containing the mood,
+      `You are an assistant that analyzes journal entries. Analyze the following journal entry and return a JSON object containing the mood which is expressed by one word,
       subject, summary, emoji, a color representing the mood, and whether the emotion is NEGATIVE, NEUTRAL or POSITIVE.
       Make sure emotion values are uppercase letters and sentimentScore is rated on a scale from -10 to 10
       Please address the summary directly to the writer, not in the third person.

@@ -15,6 +15,22 @@ export const getEntries = async () => {
   return entries
 }
 
+export const getAnalytics = async () => {
+  const user = await getUserByClerkId()
+  const analytics = await prisma.entryAnalysis.findMany({
+    where: {
+      userId: user.id,
+    },
+    select: {
+      sentimentScore: true,
+      color: true,
+      mood: true,
+    },
+  })
+
+  return analytics
+}
+
 export const getEntryById = async (id: string) => {
   const user = await getUserByClerkId()
   const entry = await prisma.journalEntry.findUnique({
