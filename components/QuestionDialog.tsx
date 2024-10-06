@@ -2,47 +2,21 @@
 
 import * as React from 'react'
 import { Input } from './ui/input'
-import { Search } from 'lucide-react'
-import {
-  CalendarIcon,
-  EnvelopeClosedIcon,
-  FaceIcon,
-  GearIcon,
-  PersonIcon,
-  BookIcon,
-} from '@radix-ui/react-icons'
+import { Search, Book } from 'lucide-react'
 
 import {
   CommandDialog,
   CommandEmpty,
-  CommandGroup,
   CommandInput,
   CommandItem,
   CommandList,
   CommandSeparator,
-  CommandShortcut,
 } from '@/components/ui/command'
-import { getEntries } from '@/utils/api'
 
 export function CommandDialogDemo() {
   const [open, setOpen] = React.useState(false)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [journals, setJournals] = React.useState([])
-  const [query, setQuery] = React.useState('')
-
-  React.useEffect(() => {
-    const fetchJournals = async () => {
-      const entries = await getEntries()
-      setJournals(entries)
-    }
-
-    fetchJournals()
-  }, [query])
-
-  const filteredJournals = React.useMemo(() => {
-    return journals.filter((journal) =>
-      journal.analysis.subject.toLowerCase().includes(query.toLowerCase()),
-    )
-  }, [journals, query])
 
   React.useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -55,10 +29,6 @@ export function CommandDialogDemo() {
     document.addEventListener('keydown', down)
     return () => document.removeEventListener('keydown', down)
   }, [])
-
-  const handleQuery = (value: string) => {
-    setQuery(value)
-  }
 
   return (
     <>
@@ -82,20 +52,15 @@ export function CommandDialogDemo() {
       </div>
 
       <CommandDialog open={open} onOpenChange={setOpen}>
-        <CommandInput
-          placeholder="Type a command or search..."
-          onValueChange={handleQuery}
-        />
+        <CommandInput placeholder="Type a command or search..." />
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>
-          {/* <CommandGroup heading="Suggestions"> */}
-          {filteredJournals.map((journal) => (
+          {journals.map((journal) => (
             <CommandItem key={journal.id}>
-              <BookIcon className="mr-2 h-4 w-4" />
+              <Book className="mr-2 h-4 w-4" />
               <span>Calendar</span>
             </CommandItem>
           ))}
-          {/* </CommandGroup> */}
           <CommandSeparator />
         </CommandList>
       </CommandDialog>
