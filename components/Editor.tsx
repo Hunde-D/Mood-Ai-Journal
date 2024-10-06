@@ -14,6 +14,7 @@ import { LoaderCircle } from 'lucide-react'
 import { formatTime } from '@/utils/formatDate'
 import { toast } from 'sonner'
 import MobileAnalysisView from './MobileAnalysisView'
+import { set } from 'zod'
 const Editor = ({ entry }) => {
   const [content, setContent] = useState(entry.content)
   const [analysis, setAnalysis] = useState(entry.analysis)
@@ -21,21 +22,24 @@ const Editor = ({ entry }) => {
 
   const handleNewAnalysis = async () => {
     const promise = async () => {
-      try {
-        setAnalysisLoading(true)
-        const data = await updateAnalysis(entry.id, content)
-        setAnalysis(data)
+      setAnalysisLoading(true)
+      const data = await updateAnalysis(entry.id, content)
+
+      if (!data) {
         setAnalysisLoading(false)
-        return data
-      } catch (error) {
-        throw error
+        throw new Error(
+          'GoogleGenerativeAIError: Too Many Requests, Resource has been exhausted. Check quota',
+        )
       }
+      setAnalysis(data)
+      setAnalysisLoading(false)
+      return data
     }
 
     toast.promise(promise(), {
       loading: 'Updating analysis...',
       success: (data) => `You look ${data.mood} ${data.emoji}`,
-      error: 'Failed to update analysis',
+      error: (error) => `${error}`, // This is displayed if the promise is rejected
     })
   }
 
