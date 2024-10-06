@@ -1,13 +1,15 @@
 'use client'
 
 import * as React from 'react'
+import { Input } from './ui/input'
+import { Search } from 'lucide-react'
 import {
   CalendarIcon,
   EnvelopeClosedIcon,
   FaceIcon,
   GearIcon,
   PersonIcon,
-  RocketIcon,
+  BookIcon,
 } from '@radix-ui/react-icons'
 
 import {
@@ -20,9 +22,27 @@ import {
   CommandSeparator,
   CommandShortcut,
 } from '@/components/ui/command'
+import { getEntries } from '@/utils/api'
 
 export function CommandDialogDemo() {
   const [open, setOpen] = React.useState(false)
+  const [journals, setJournals] = React.useState([])
+  const [query, setQuery] = React.useState('')
+
+  React.useEffect(() => {
+    const fetchJournals = async () => {
+      const entries = await getEntries()
+      setJournals(entries)
+    }
+
+    fetchJournals()
+  }, [query])
+
+  const filteredJournals = React.useMemo(() => {
+    return journals.filter((journal) =>
+      journal.analysis.subject.toLowerCase().includes(query.toLowerCase()),
+    )
+  }, [journals, query])
 
   React.useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -36,49 +56,47 @@ export function CommandDialogDemo() {
     return () => document.removeEventListener('keydown', down)
   }, [])
 
+  const handleQuery = (value: string) => {
+    setQuery(value)
+  }
+
   return (
     <>
-      <p className="text-sm text-muted-foreground">
-        <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
-          <span className="text-xs">⌘</span>K
-        </kbd>
-      </p>
+      <div
+        className="relative flex items-center"
+        onClick={() => setOpen((open) => !open)}
+      >
+        <Search className="absolute left-2.5 h-4 w-4 text-muted-foreground" />
+        <Input
+          type="search"
+          placeholder="Ask AI anything..."
+          className="w-72 appearance-none bg-background px-8 shadow-none"
+        />
+        <div className="absolute right-2.5 text-sm text-muted-foreground">
+          <p className="text-sm text-muted-foreground">
+            <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
+              <span className="text-xs">⌘</span>K
+            </kbd>
+          </p>
+        </div>
+      </div>
+
       <CommandDialog open={open} onOpenChange={setOpen}>
-        <CommandInput placeholder="Type a command or search..." />
+        <CommandInput
+          placeholder="Type a command or search..."
+          onValueChange={handleQuery}
+        />
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>
-          <CommandGroup heading="Suggestions">
-            <CommandItem>
-              <CalendarIcon className="mr-2 h-4 w-4" />
+          {/* <CommandGroup heading="Suggestions"> */}
+          {filteredJournals.map((journal) => (
+            <CommandItem key={journal.id}>
+              <BookIcon className="mr-2 h-4 w-4" />
               <span>Calendar</span>
             </CommandItem>
-            <CommandItem>
-              <FaceIcon className="mr-2 h-4 w-4" />
-              <span>Search Emoji</span>
-            </CommandItem>
-            <CommandItem>
-              <RocketIcon className="mr-2 h-4 w-4" />
-              <span>Launch</span>
-            </CommandItem>
-          </CommandGroup>
+          ))}
+          {/* </CommandGroup> */}
           <CommandSeparator />
-          <CommandGroup heading="Settings">
-            <CommandItem>
-              <PersonIcon className="mr-2 h-4 w-4" />
-              <span>Profile</span>
-              <CommandShortcut>⌘P</CommandShortcut>
-            </CommandItem>
-            <CommandItem>
-              <EnvelopeClosedIcon className="mr-2 h-4 w-4" />
-              <span>Mail</span>
-              <CommandShortcut>⌘B</CommandShortcut>
-            </CommandItem>
-            <CommandItem>
-              <GearIcon className="mr-2 h-4 w-4" />
-              <span>Settings</span>
-              <CommandShortcut>⌘S</CommandShortcut>
-            </CommandItem>
-          </CommandGroup>
         </CommandList>
       </CommandDialog>
     </>

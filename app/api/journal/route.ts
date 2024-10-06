@@ -31,3 +31,22 @@ export const POST = async () => {
   revalidatePath('/journal')
   return NextResponse.json({ data: entry })
 }
+
+export const GET = async () => {
+  const user = await getUserByClerkId()
+  if (!user) {
+    console.log('user not found')
+  }
+
+  const entries = await prisma.journalEntry.findMany({
+    where: {
+      userId: user.id,
+    },
+    orderBy: {
+      updatedAt: 'desc',
+    },
+    include: { analysis: true },
+  })
+
+  return NextResponse.json({ data: entries })
+}
