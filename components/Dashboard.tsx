@@ -14,7 +14,6 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import NavLinks from './NavLinks'
 import { CommandDialogDemo } from './QuestionDialog'
 import UserAvatar from './UserAvatar'
-
 export default function Dashboard({ children }: { children: React.ReactNode }) {
   return (
     <div className="grid h-screen w-full overflow-hidden md:grid-cols-[190px_1fr] lg:grid-cols-[200px_1fr]">
