@@ -52,9 +52,9 @@ export function CommandDialogDemo() {
       </div>
 
       <CommandDialog open={open} onOpenChange={setOpen}>
-        <CommandInput placeholder="Type a command or search..." />
+        <CommandInput placeholder="Ask about your journals" />
         <CommandList>
-          <CommandEmpty>No results found.</CommandEmpty>
+          <CommandEmpty>coming soon..</CommandEmpty>
           {journals.map((journal) => (
             <CommandItem key={journal.id}>
               <Book className="mr-2 h-4 w-4" />
