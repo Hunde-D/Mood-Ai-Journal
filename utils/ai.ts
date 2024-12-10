@@ -32,9 +32,10 @@ const JournalAnalysis = z
       .describe(
         'emoji that represents the mood of the entry. Example: 😊 for happiness.',
       ),
+    language: z.string().describe('The language of the journal entry.'),
   })
   .describe(
-    'Journal analysis to provide feedback on mood, subject, summary, color, and emotion.',
+    'Journal analysis to provide feedback on mood, subject, summary, color, emotion and language.',
   )
 
 export const analyzeEntry = async (entry: string) => {
@@ -43,16 +44,18 @@ export const analyzeEntry = async (entry: string) => {
     temperature: 0,
     maxRetries: 2,
   })
+  // const language = await llm.detectLanguage(entry)
+  const language = 'english'
   const structuredLlm = llm.withStructuredOutput(JournalAnalysis, {
     name: 'JournalAnalysis',
   })
   const aiMsg = await structuredLlm.invoke([
     [
       'system',
-      `You are an assistant that analyzes journal entries. Analyze the following journal entry and return a JSON object containing the mood which is expressed by one word,
+      `You are an assistant that analyzes journal entries written in multiple languages. The language of the following entry is ${language}. Analyze the following journal entry and return a JSON object containing the mood which is expressed by one word,
       subject, summary, emoji, a color representing the mood, and whether the emotion is NEGATIVE, NEUTRAL or POSITIVE.
       Make sure emotion values are uppercase letters and sentimentScore is rated on a scale from -10 to 10
-      Please address the summary directly to the writer, not in the third person.
+      Please address the summary directly to the writer, not in the third person and also the response has to be with the language detected.
       Respond with a JSON object formatted like this no matter what:
         {
           "mood": " ",
@@ -62,6 +65,7 @@ export const analyzeEntry = async (entry: string) => {
           "emotion": "neutral" or "positive" or "negative"
           "sentimentScore": -10 to 10
           "emoji":""
+          "language":""
         }`,
     ],
     ['human', `${entry}`],
