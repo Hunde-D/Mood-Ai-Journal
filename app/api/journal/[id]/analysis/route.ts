@@ -5,7 +5,8 @@ import { analyzeEntry } from '@/utils/ai'
 
 export const PATCH = async (req: Request, { params }) => {
   const { content } = await req.json()
-  const analysis = await analyzeEntry(content)
+  const lang = 'spanish'
+  const analysis = await analyzeEntry(content, lang)
 
   const user = await getUserByClerkId()
   if (!user) {

@@ -1,77 +1,97 @@
-import { ChatGoogleGenerativeAI } from '@langchain/google-genai'
-import { z } from 'zod'
+import { GoogleGenerativeAI, SchemaType } from '@google/generative-ai'
 
-const JournalAnalysis = z
-  .object({
-    mood: z
-      .string()
-      .describe(
-        'The mood of the journal entry or The mood of the person who wrote the journal entry must be one word.',
-      ),
-    subject: z.string().describe('The subject or theme of the journal entry.'),
-    summary: z
-      .string()
-      .describe(
+const schema = {
+  description:
+    'Journal analysis to provide feedback on mood, subject, summary, color, emotion, and language.',
+  type: SchemaType.OBJECT,
+  properties: {
+    mood: {
+      type: SchemaType.STRING,
+      description:
+        'The mood of the journal entry or the person who wrote it, must be one word.',
+      nullable: false,
+    },
+    subject: {
+      type: SchemaType.STRING,
+      description: 'The subject or theme of the journal entry.',
+      nullable: false,
+    },
+    summary: {
+      type: SchemaType.STRING,
+      description:
         'A quick summary of the entire entry that directly addresses the writer.',
-      ),
-    color: z
-      .string()
-      .describe(
-        'A a hexidecimal color code that represents the mood of the entry.',
-      ),
-    emotion: z
-      .enum(['NEGATIVE', 'NEUTRAL', 'POSITIVE'])
-      .describe('The emotional tone, whether neutral, positive or negative.'),
-    sentimentScore: z
-      .number()
-      .describe(
-        'sentiment of the text and rated on a scale from -10 to 10, where -10 is extremely negative, 0 is neutral, and 10 is extremely positive.',
-      ),
-    emoji: z
-      .string()
-      .describe(
-        'emoji that represents the mood of the entry. Example: 😊 for happiness.',
-      ),
-    language: z.string().describe('The language of the journal entry.'),
-  })
-  .describe(
-    'Journal analysis to provide feedback on mood, subject, summary, color, emotion and language.',
-  )
+      nullable: false,
+    },
+    color: {
+      type: SchemaType.STRING,
+      description:
+        'A hexadecimal color code that represents the mood of the entry.',
+      nullable: false,
+    },
+    emotion: {
+      type: SchemaType.STRING,
+      enum: ['NEGATIVE', 'NEUTRAL', 'POSITIVE'],
+      description:
+        'The emotional tone, whether neutral, positive, or negative (uppercase).',
+      nullable: false,
+    },
+    sentimentScore: {
+      type: SchemaType.NUMBER,
+      description:
+        'Sentiment of the text rated on a scale from -10 to 10, where -10 is extremely negative, 0 is neutral, and 10 is extremely positive.',
+      nullable: false,
+    },
+    emoji: {
+      type: SchemaType.STRING,
+      description:
+        'Emoji that represents the mood of the entry. Example: 😊 for happiness.',
+      nullable: false,
+    },
+    language: {
+      type: SchemaType.STRING,
+      description: 'The language of the journal entry.',
+      nullable: false,
+    },
+  },
+  required: [
+    'mood',
+    'subject',
+    'summary',
+    'color',
+    'emotion',
+    'sentimentScore',
+    'emoji',
+    'language',
+  ],
+}
 
-export const analyzeEntry = async (entry: string) => {
-  const llm = new ChatGoogleGenerativeAI({
-    model: 'gemini-1.5-pro',
-    temperature: 0,
-    maxRetries: 2,
-  })
-  // const language = await llm.detectLanguage(entry)
-  const language = 'english'
-  const structuredLlm = llm.withStructuredOutput(JournalAnalysis, {
-    name: 'JournalAnalysis',
-  })
-  const aiMsg = await structuredLlm.invoke([
-    [
-      'system',
-      `You are an assistant that analyzes journal entries written in multiple languages. The language of the following entry is ${language}. Analyze the following journal entry and return a JSON object containing the mood which is expressed by one word,
-      subject, summary, emoji, a color representing the mood, and whether the emotion is NEGATIVE, NEUTRAL or POSITIVE.
-      Make sure emotion values are uppercase letters and sentimentScore is rated on a scale from -10 to 10
-      Please address the summary directly to the writer, not in the third person and also the response has to be with the language detected.
-      Respond with a JSON object formatted like this no matter what:
-        {
-          "mood": " ",
-          "subject": " ",
-          "summary": " ",
-          "color": " ",
-          "emotion": "neutral" or "positive" or "negative"
-          "sentimentScore": -10 to 10
-          "emoji":""
-          "language":""
-        }`,
-    ],
-    ['human', `${entry}`],
-  ])
-  console.log(aiMsg)
-  return aiMsg
+const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY)
+const model = genAI.getGenerativeModel({
+  model: 'gemini-1.5-pro',
+  generationConfig: {
+    responseMimeType: 'application/json',
+    responseSchema: schema,
+  },
+})
+export const analyzeEntry = async (journalEntry: string, language: string) => {
+  const prompt = `
+    You are an assistant that analyzes journal entries written in multiple languages.
+      The language of response should be in ${language}. Analyze the following journal entry and return a JSON object
+      containing the mood (one word), subject, summary (directly addressing the writer), emoji,
+      a color representing the mood, emotion (NEGATIVE, NEUTRAL, POSITIVE in uppercase),
+      sentimentScore (rated on a scale from -10 to 10), and the detected language (the language the journal entry is written in).
+      Please address the summary directly to the writer and ensure the response is in ${language}.
+
+      Journal Entry: ${journalEntry}
+  `
+  try {
+    const result = await model.generateContent(prompt)
+    const jsonResponse = JSON.parse(result.response.text())
+    return jsonResponse
+  } catch (error) {
+    console.error('Error analyzing entry:', error)
+    throw new Error('Failed to analyze journal entry')
+  }
 }
 //   try {
 //     return parser.parse(output)
