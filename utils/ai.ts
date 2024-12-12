@@ -47,6 +47,17 @@ const schema = {
         'Emoji that represents the mood of the entry. Example: 😊 for happiness.',
       nullable: false,
     },
+    recommendation: {
+      type: SchemaType.OBJECT,
+      description: 'Mood-specific recommendations and actionable insights.',
+      nullable: false,
+      properties: {
+        message: {
+          type: SchemaType.STRING,
+          description: 'Recommendation text',
+        },
+      },
+    },
     language: {
       type: SchemaType.STRING,
       description: 'The language of the journal entry.',
@@ -79,14 +90,19 @@ export const analyzeEntry = async (journalEntry: string, language: string) => {
       The language of response should be in ${language}. Analyze the following journal entry and return a JSON object
       containing the mood (one word), subject, summary (directly addressing the writer), emoji,
       a color representing the mood, emotion (NEGATIVE, NEUTRAL, POSITIVE in uppercase),
-      sentimentScore (rated on a scale from -10 to 10), and the detected language (the language the journal entry is written in).
-      Please address the summary directly to the writer and ensure the response is in ${language}.
+      sentimentScore (rated on a scale from -10 to 10), provide mood-specific recommendations and actionable insights no more than 2 sentences and 12 words.
+      For example:
+      - "Feeling anxious? Try a 5-minute guided breathing exercise."
+      - "Feeling happy? Save this moment by journaling more about what brought you joy."
+      The recommendations should align with the detected mood and be actionable. and the detected language (the language the journal entry is written in).
+      Please ensure the hole response is in ${language}.
 
       Journal Entry: ${journalEntry}
   `
   try {
     const result = await model.generateContent(prompt)
     const jsonResponse = JSON.parse(result.response.text())
+    console.log('object:', jsonResponse)
     return jsonResponse
   } catch (error) {
     console.error('Error analyzing entry:', error)

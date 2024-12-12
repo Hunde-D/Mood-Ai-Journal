@@ -4,9 +4,8 @@ import { NextResponse } from 'next/server'
 import { analyzeEntry } from '@/utils/ai'
 
 export const PATCH = async (req: Request, { params }) => {
-  const { content } = await req.json()
-  const lang = 'spanish'
-  const analysis = await analyzeEntry(content, lang)
+  const { content, responseLanguage } = await req.json()
+  const analysis = await analyzeEntry(content, responseLanguage)
 
   const user = await getUserByClerkId()
   if (!user) {
@@ -28,5 +27,10 @@ export const PATCH = async (req: Request, { params }) => {
       emoji: analysis.emoji || '😐',
     },
   })
-  return NextResponse.json({ data: updatedAnalysis })
+  const recommendation = {
+    message: analysis.recommendation.message,
+  }
+  return NextResponse.json({
+    data: { ...updatedAnalysis, ...recommendation },
+  })
 }

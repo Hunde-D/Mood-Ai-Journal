@@ -37,6 +37,8 @@ export const updateEntry = async (id: string, content: string) => {
   }
 }
 export const updateAnalysis = async (id: string, content: string) => {
+  const responseLanguage = localStorage.getItem('mood-lang') || 'English'
+
   try {
     const res = await fetch(
       new Request(createURL(`/api/journal/${id}/analysis`), {
@@ -44,12 +46,13 @@ export const updateAnalysis = async (id: string, content: string) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ content }),
+        body: JSON.stringify({ content, responseLanguage }),
       }),
     )
 
     if (res.ok) {
       const data = await res.json()
+      console.log('data', data.data)
       return data.data
     }
   } catch (error) {
