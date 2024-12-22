@@ -51,6 +51,8 @@ model JournalEntry {
   status  JOURNAL_ENTRY_STATUS @default(DRAFT)
   analysis EntryAnalysis?
 
+  tags String[]
+
   @@unique([userId, id])
 }
 enum JOURNAL_ENTRY_EMOTION {
@@ -76,6 +78,7 @@ model EntryAnalysis {
   color String @db.Text @default("#dadadc")
   sentimentScore Float
   emoji String?
+  recommendation String? @db.Text
 
   @@unique([entryId])
   @@index([userId])

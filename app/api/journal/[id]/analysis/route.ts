@@ -4,28 +4,39 @@ import { NextResponse } from 'next/server'
 import { analyzeEntry } from '@/utils/ai'
 
 export const PATCH = async (req: Request, { params }) => {
-  const { content } = await req.json()
-  const analysis = await analyzeEntry(content)
+  const { content, responseLanguage } = await req.json()
+  const analysis = await analyzeEntry(content, responseLanguage)
 
   const user = await getUserByClerkId()
   if (!user) {
     console.log('user not found')
   }
 
-  const updatedAnalysis = await prisma.entryAnalysis.update({
+  const update = await prisma.journalEntry.update({
     where: {
-      entryId: params.id,
-      userId: user.id,
+      userId_id: {
+        userId: user.id,
+        id: params.id,
+      },
     },
     data: {
-      mood: analysis.mood,
-      subject: analysis.subject,
-      summary: analysis.summary,
-      color: analysis.color,
-      emotion: analysis.emotion,
-      sentimentScore: analysis.sentimentScore,
-      emoji: analysis.emoji || '😐',
+      content,
+      tags: analysis.tags,
+      analysis: {
+        update: {
+          mood: analysis.mood,
+          subject: analysis.subject,
+          summary: analysis.summary,
+          color: analysis.color,
+          emotion: analysis.emotion,
+          sentimentScore: analysis.sentimentScore,
+          emoji: analysis.emoji,
+          recommendation: analysis.recommendation,
+        },
+      },
     },
   })
-  return NextResponse.json({ data: updatedAnalysis })
+  return NextResponse.json({
+    data: { ...update },
+  })
 }

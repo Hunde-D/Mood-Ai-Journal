@@ -37,6 +37,8 @@ export const updateEntry = async (id: string, content: string) => {
   }
 }
 export const updateAnalysis = async (id: string, content: string) => {
+  const responseLanguage = localStorage.getItem('mood-lang') || 'English'
+
   try {
     const res = await fetch(
       new Request(createURL(`/api/journal/${id}/analysis`), {
@@ -44,7 +46,7 @@ export const updateAnalysis = async (id: string, content: string) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ content }),
+        body: JSON.stringify({ content, responseLanguage }),
       }),
     )
 
@@ -54,6 +56,28 @@ export const updateAnalysis = async (id: string, content: string) => {
     }
   } catch (error) {
     console.log('error:', error)
+    return null
+  }
+}
+
+export const moodAiChat = async (query: string) => {
+  try {
+    const res = await fetch(
+      new Request(createURL(`/api/chat`), {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ message: query }),
+      }),
+    )
+
+    if (res.ok) {
+      const data = await res.json()
+      return data.data
+    }
+  } catch (error) {
+    console.error('Error:', error)
     return null
   }
 }

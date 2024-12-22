@@ -14,16 +14,15 @@ import { LoaderCircle } from 'lucide-react'
 import { formatTime } from '@/utils/formatDate'
 import { toast } from 'sonner'
 import MobileAnalysisView from './MobileAnalysisView'
+import { JournalOptions } from './journal-options'
 const Editor = ({ entry }) => {
   const [content, setContent] = useState(entry.content)
   const [analysis, setAnalysis] = useState(entry.analysis)
   const [analysisLoading, setAnalysisLoading] = useState(false)
-
   const handleNewAnalysis = async () => {
     const promise = async () => {
       setAnalysisLoading(true)
       const data = await updateAnalysis(entry.id, content)
-
       if (!data) {
         setAnalysisLoading(false)
         throw new Error(
@@ -91,18 +90,19 @@ const Editor = ({ entry }) => {
           </MobileAnalysisView>
         </div>
       </ResizablePanel>
-      <ResizableHandle withHandle />
+      <ResizableHandle withHandle className="max-md:hidden" />
       <ResizablePanel
         defaultSize={25}
         className="flex flex-col gap-5 pl-5 max-md:hidden"
       >
-        <div className="flex h-fit items-center justify-between px-5">
+        <div className="items-top flex h-fit justify-between px-5">
           <div>
             <h3 className="text-lg font-semibold">AI Analysis</h3>
             <p className="text-xs text-muted-foreground">
               last analyzed {formatTime(analysis.updatedAt)}
             </p>
           </div>
+          <JournalOptions />
         </div>
         <div
           className="moodBackground h-16 w-full rounded-xl"
