@@ -23,7 +23,6 @@ const Editor = ({ entry }) => {
     const promise = async () => {
       setAnalysisLoading(true)
       const data = await updateAnalysis(entry.id, content)
-
       if (!data) {
         setAnalysisLoading(false)
         throw new Error(
@@ -91,7 +90,7 @@ const Editor = ({ entry }) => {
           </MobileAnalysisView>
         </div>
       </ResizablePanel>
-      <ResizableHandle withHandle />
+      <ResizableHandle withHandle className="max-md:hidden" />
       <ResizablePanel
         defaultSize={25}
         className="flex flex-col gap-5 pl-5 max-md:hidden"

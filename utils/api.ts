@@ -52,11 +52,32 @@ export const updateAnalysis = async (id: string, content: string) => {
 
     if (res.ok) {
       const data = await res.json()
-      console.log('data', data.data)
       return data.data
     }
   } catch (error) {
     console.log('error:', error)
+    return null
+  }
+}
+
+export const moodAiChat = async (query: string) => {
+  try {
+    const res = await fetch(
+      new Request(createURL(`/api/chat`), {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ message: query }),
+      }),
+    )
+
+    if (res.ok) {
+      const data = await res.json()
+      return data.data
+    }
+  } catch (error) {
+    console.error('Error:', error)
     return null
   }
 }

@@ -1,114 +1,116 @@
-import { GoogleGenerativeAI, SchemaType } from '@google/generative-ai'
+import { generateObject } from 'ai'
+import { google } from '@ai-sdk/google'
+import { z } from 'zod'
+import { moodTags } from './data'
 
-const schema = {
-  description:
-    'Journal analysis to provide feedback on mood, subject, summary, color, emotion, and language.',
-  type: SchemaType.OBJECT,
-  properties: {
-    mood: {
-      type: SchemaType.STRING,
-      description:
-        'The mood of the journal entry or the person who wrote it, must be one word.',
-      nullable: false,
-    },
-    subject: {
-      type: SchemaType.STRING,
-      description: 'The subject or theme of the journal entry.',
-      nullable: false,
-    },
-    summary: {
-      type: SchemaType.STRING,
-      description:
-        'A quick summary of the entire entry that directly addresses the writer.',
-      nullable: false,
-    },
-    color: {
-      type: SchemaType.STRING,
-      description:
-        'A hexadecimal color code that represents the mood of the entry.',
-      nullable: false,
-    },
-    emotion: {
-      type: SchemaType.STRING,
-      enum: ['NEGATIVE', 'NEUTRAL', 'POSITIVE'],
-      description:
-        'The emotional tone, whether neutral, positive, or negative (uppercase).',
-      nullable: false,
-    },
-    sentimentScore: {
-      type: SchemaType.NUMBER,
-      description:
-        'Sentiment of the text rated on a scale from -10 to 10, where -10 is extremely negative, 0 is neutral, and 10 is extremely positive.',
-      nullable: false,
-    },
-    emoji: {
-      type: SchemaType.STRING,
-      description:
-        'Emoji that represents the mood of the entry. Example: 😊 for happiness.',
-      nullable: false,
-    },
-    recommendation: {
-      type: SchemaType.OBJECT,
-      description: 'Mood-specific recommendations and actionable insights.',
-      nullable: false,
-      properties: {
-        message: {
-          type: SchemaType.STRING,
-          description: 'Recommendation text',
-        },
-      },
-    },
-    language: {
-      type: SchemaType.STRING,
-      description: 'The language of the journal entry.',
-      nullable: false,
-    },
-  },
-  required: [
-    'mood',
-    'subject',
-    'summary',
-    'color',
-    'emotion',
-    'sentimentScore',
-    'emoji',
-    'language',
-  ],
-}
-
-const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY)
-const model = genAI.getGenerativeModel({
-  model: 'gemini-1.5-pro',
-  generationConfig: {
-    responseMimeType: 'application/json',
-    responseSchema: schema,
-  },
+const analyzeEntrySchema = z.object({
+  analysis: z.object({
+    mood: z.string().describe('One-word mood of the journal entry or writer.'),
+    subject: z.string().describe('Main subject or theme of the journal entry.'),
+    summary: z
+      .string()
+      .describe('Concise summary addressing the writer directly.'),
+    color: z
+      .string()
+      .describe("Hexadecimal color code representing the entry's mood."),
+    emotion: z
+      .enum(['NEGATIVE', 'NEUTRAL', 'POSITIVE'])
+      .describe('Overall emotional tone.'),
+    sentimentScore: z
+      .number()
+      .min(-10)
+      .max(10)
+      .describe(
+        'Sentiment scale from -10 (very negative) to 10 (very positive).',
+      ),
+    emoji: z.string().describe("Single emoji representing the entry's mood."),
+    recommendation: z
+      .string()
+      .max(100)
+      .describe('Short, actionable advice aligned with the mood.'),
+    language: z.string().describe('Detected language of the journal entry.'),
+    tags: z
+      .array(z.enum(moodTags))
+      .describe('Array of mood tags that apply to the entry.'),
+  }),
 })
-export const analyzeEntry = async (journalEntry: string, language: string) => {
-  const prompt = `
-    You are an assistant that analyzes journal entries written in multiple languages.
-      The language of response should be in ${language}. Analyze the following journal entry and return a JSON object
-      containing the mood (one word), subject, summary (directly addressing the writer), emoji,
-      a color representing the mood, emotion (NEGATIVE, NEUTRAL, POSITIVE in uppercase),
-      sentimentScore (rated on a scale from -10 to 10), provide mood-specific recommendations and actionable insights no more than 2 sentences and 12 words.
-      For example:
-      - "Feeling anxious? Try a 5-minute guided breathing exercise."
-      - "Feeling happy? Save this moment by journaling more about what brought you joy."
-      The recommendations should align with the detected mood and be actionable. and the detected language (the language the journal entry is written in).
-      Please ensure the hole response is in ${language}.
 
-      Journal Entry: ${journalEntry}
-  `
+export const analyzeEntry = async (journalEntry: string, language: string) => {
   try {
-    const result = await model.generateContent(prompt)
-    const jsonResponse = JSON.parse(result.response.text())
-    console.log('object:', jsonResponse)
-    return jsonResponse
+    const { object } = await generateObject({
+      model: google('gemini-1.5-pro-latest'),
+      schema: analyzeEntrySchema,
+      prompt: `
+        You are an empathetic AI assistant specializing in analyzing journal entries.
+        Analyze the following journal entry and provide insights. Respond in ${language}.
+
+        Guidelines:
+        1. Mood: Capture the predominant feeling in one word.
+        2. Subject: Identify the main topic or theme.
+        3. Summary: Provide a brief, personalized summary directly addressing the writer.
+        4. Color: Choose a hex color that best represents the entry's mood.
+        5. Emotion: Categorize as NEGATIVE, NEUTRAL, or POSITIVE.
+        6. Sentiment Score: Rate from -10 (extremely negative) to 10 (extremely positive).
+        7. Emoji: Select one emoji that encapsulates the entry's mood.
+        8. Recommendation: Offer a short, actionable suggestion (max 100 characters) tailored to the mood and content.
+        9. Language: Detect and specify the language used in the entry.
+        10. Tags: Select 1-3 mood tags from the provided list that best describe the entry's emotional state.
+
+        Mood Tags:
+        ${moodTags.join(', ')}
+
+        Remember:
+        - Be sensitive and supportive in your analysis.
+        - Ensure recommendations are helpful and mood-appropriate.
+        - Maintain a non-judgmental tone throughout the analysis.
+        - Choose tags that accurately reflect the nuances of the entry's mood.
+
+        Journal Entry:
+        "${journalEntry}"
+
+        Provide your analysis in a structured JSON format as per the defined schema.
+      `,
+    })
+
+    console.log('Analysis result:', object.analysis)
+    return object.analysis
   } catch (error) {
     console.error('Error analyzing entry:', error)
     throw new Error('Failed to analyze journal entry')
   }
 }
+
+// Note: The journalChat function would need to be refactored separately,
+// as it uses different models and embedding functionality not directly
+// supported by the AI SDK in the same way.
+
+// export const journalChat = async (
+//   message: string,
+//   journalHistory: EntryAnalysis[],
+// ) => {
+//   console.log('3:', message)
+//   const model2 = genAI.getGenerativeModel({ model: 'text-embedding-004' })
+//   const result2 = await model2.embedContent(JSON.stringify(journalHistory))
+//   console.log('emb', result2.embedding.values)
+
+//   const model = genAI.getGenerativeModel({ model: 'gemini-1.5-pro' })
+//   const history = journalHistory.map((entry) => ({
+//     role: 'user', // Assuming user role for all history entries
+//     parts: [
+//       {
+//         text: `${entry.createdAt},${entry.mood},${entry.summary},${entry.emotion},${entry.createdAt},${entry.sentimentScore},`,
+//       },
+//     ], // Use the summary as the content part
+//   }))
+
+//   const chat = model.startChat({
+//     history: history, // Transformed history
+//   })
+
+//   const result = await chat.sendMessage(message)
+//   console.log('result:', result.response.text())
+//   return result.response.text()
+// }
 //   try {
 //     return parser.parse(output)
 //   } catch (e) {

@@ -16,12 +16,13 @@ export const POST = async () => {
       analysis: {
         create: {
           userId: user.id,
-          mood: 'not analyzed',
-          subject: 'not analyzed',
-          summary: 'No summary available',
+          mood: 'entry not analyzed',
+          subject: 'entry not analyzed',
+          summary: 'entry not analyzed',
           color: '#808080',
           sentimentScore: 0,
           emoji: '😐',
+          recommendation: 'entry not analyzed',
         },
       },
     },

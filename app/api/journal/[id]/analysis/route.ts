@@ -12,25 +12,31 @@ export const PATCH = async (req: Request, { params }) => {
     console.log('user not found')
   }
 
-  const updatedAnalysis = await prisma.entryAnalysis.update({
+  const update = await prisma.journalEntry.update({
     where: {
-      entryId: params.id,
-      userId: user.id,
+      userId_id: {
+        userId: user.id,
+        id: params.id,
+      },
     },
     data: {
-      mood: analysis.mood,
-      subject: analysis.subject,
-      summary: analysis.summary,
-      color: analysis.color,
-      emotion: analysis.emotion,
-      sentimentScore: analysis.sentimentScore,
-      emoji: analysis.emoji || '😐',
+      content,
+      tags: analysis.tags,
+      analysis: {
+        update: {
+          mood: analysis.mood,
+          subject: analysis.subject,
+          summary: analysis.summary,
+          color: analysis.color,
+          emotion: analysis.emotion,
+          sentimentScore: analysis.sentimentScore,
+          emoji: analysis.emoji,
+          recommendation: analysis.recommendation,
+        },
+      },
     },
   })
-  const recommendation = {
-    message: analysis.recommendation.message,
-  }
   return NextResponse.json({
-    data: { ...updatedAnalysis, ...recommendation },
+    data: { ...update },
   })
 }

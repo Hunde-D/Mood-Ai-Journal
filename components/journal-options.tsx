@@ -1,18 +1,18 @@
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+// import { Button } from '@/components/ui/button'
+// import { Input } from '@/components/ui/input'
+// import { Label } from '@/components/ui/label'
 import {
   Sheet,
-  SheetClose,
+  // SheetClose,
   SheetContent,
   SheetDescription,
-  SheetFooter,
+  // SheetFooter,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet'
 import { Settings } from 'lucide-react'
-import ResponseLanguage from './response-lang-select'
+import ResponseLanguage from './select-model'
 
 export function JournalOptions() {
   return (
