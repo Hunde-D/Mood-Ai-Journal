@@ -1,4 +1,3 @@
-import { Button } from '@/components/ui/button'
 import { ArrowRight } from 'lucide-react'
 import NavHeader from '@/components/nav-header'
 import { BlurText } from '@/components/blur-text'
